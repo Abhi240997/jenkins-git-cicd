@@ -4,20 +4,8 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-	         git 'https://Abhi240997:ATBBUdnZ8erHzVG7vYP4N9ghsRmX4AC6DD9B@bitbucket.org/abhi240997/gateway_casino.git'
-            bat 'mvn clean -DskipmunitTests install'
-      }
-    }
-    stage('Deploy') {
-      steps {
-	         git 'https://Abhi240997:ATBBUdnZ8erHzVG7vYP4N9ghsRmX4AC6DD9B@bitbucket.org/abhi240997/gateway_casino.git'
-            bat 'mvn clean package -DskipmunitTests deploy -DmuleDeploy -Dapp.runtime=4.4.0 -Dtarget=jenkins-bb-cicd-cluster -DapplicationName=jenkins-bb-poc -DbusinessGroup="Apisero" -DtargetType=cluster -Denvironment=Sandbox -DclientId=a70b76bc78ac443390f6b0d99eb46222 -DclientSecret=1524ceF1Df104d97b255B8771Aad7259'
-      }
-    }
-    stage('Test') {
-      steps {
-	         git 'https://Abhi240997:ATBBUdnZ8erHzVG7vYP4N9ghsRmX4AC6DD9B@bitbucket.org/abhi240997/gateway_casino.git'
-            bat 'mvn test'
+	         git 'https://github.com/Abhi240997/jenkins-git-cicd.git'
+            bat 'mvn clean package deploy -DskipMunitTests -DmuleDeploy -Dapp.runtime=4.4.0 -Dusername=temp100 -Dpassword=Abhi@240997 -DapplicationName=jenkins-bb-poc -DbusinessGroup="Apisero" -DvCore=Micro -Denvironment=Sandbox -Dworkers=1'
       }
     }
   }
