@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.mycompany</groupId>
-	<artifactId>jenkins-bb-poc</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<artifactId>dart-cicd-demo-api</artifactId>
+	<version>1.0.0</version>
 	<packaging>mule-application</packaging>
 
-	<name>jenkins-bb-poc</name>
-
+	<name>dart-cicd-demo-api</name>
+	
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<app.runtime>4.4.0-20220622</app.runtime>
-		<mule.maven.plugin.version>3.6.3</mule.maven.plugin.version>
-		<munit.version>2.3.9</munit.version>
+		<app.runtime>4.4.0</app.runtime>
+		<mule.maven.plugin.version>3.5.2</mule.maven.plugin.version>
+		<munit.version>2.3.6</munit.version>
 	</properties>
 
 	<build>
@@ -32,25 +35,26 @@
 				<extensions>true</extensions>
 				<configuration>
 					<cloudHubDeployment>
-						<uri>https://anypoint.mulesoft.com</uri>
-						<muleVersion>${app.runtime}</muleVersion>
-						<username>${username}</username>
-						<password>${password}</password>
-						<environment>${environment}</environment>
-						<applicationName>${applicationName}</applicationName>
-						<businessGroup>${businessGroup}</businessGroup>
-						<workerType>${vCore}</workerType>
-						<workers>${workers}</workers>
+						<uri>${anypoint.uri}</uri>
+						<muleVersion>${mule.version}</muleVersion>
+						<connectedAppClientId>${cloudhub.user}</connectedAppClientId>
+						<connectedAppClientSecret>${cloudhub.password}</connectedAppClientSecret>
+						<connectedAppGrantType>client_credentials</connectedAppGrantType>
+						<applicationName>${project.artifactId}${env.suffix}</applicationName>
+						<environment>${env.name}</environment>
+						<workerType>${cloudhub.workerType}</workerType>
+						<workers>${cloudhub.workerCount}</workers>
+						<region>${cloudhub.region}</region>
 						<objectStoreV2>true</objectStoreV2>
-						
-						<!-- <target>${target}</target>						
-						<targetType>${targetType}</targetType>
-						<connectedAppClientId>${clientId}</connectedAppClientId>
-						<connectedAppClientSecret>${clientSecret}</connectedAppClientSecret>
-						<connectedAppGrantType>client_credentials</connectedAppGrantType> -->						
-						<properties>
-							<key>value</key>
-						</properties>
+						<persistentQueues>false</persistentQueues>
+						<artifact>${artifact}</artifact>
+<!-- 						<properties> -->
+<!-- 							<mule.env>${mule.env}</mule.env> -->
+<!-- 							<mule.encryptionKey>${mule.encryptionKey}</mule.encryptionKey> -->
+<!-- 							<anypoint.platform.client_id>${env.client.id}</anypoint.platform.client_id> -->
+<!-- 							<anypoint.platform.client_secret>${env.client.secret}</anypoint.platform.client_secret> -->
+<!-- 							<anypoint.platform.config.analytics.agent.enabled>${anypoint.monitoring}</anypoint.platform.config.analytics.agent.enabled> -->
+<!-- 						</properties> -->
 					</cloudHubDeployment>
 					<classifier>mule-application</classifier>
 				</configuration>
@@ -72,7 +76,13 @@
 				<configuration>
 					<coverage>
 						<runCoverage>true</runCoverage>
+						<failBuild>true</failBuild>
+						<requiredApplicationCoverage>${app.coverage}</requiredApplicationCoverage>
+						<!-- The other coverage can be use to validate as per the required -->
+<!-- 						<requiredResourceCoverage>${resource.coverage}</requiredResourceCoverage> -->
+<!-- 						<requiredFlowCoverage>${flow.coverage}</requiredFlowCoverage> -->
 						<formats>
+							<format>console</format>
 							<format>html</format>
 						</formats>
 					</coverage>
@@ -85,7 +95,7 @@
 		<dependency>
 			<groupId>org.mule.connectors</groupId>
 			<artifactId>mule-http-connector</artifactId>
-			<version>1.7.1</version>
+			<version>1.5.25</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
@@ -95,16 +105,29 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
+			<groupId>3b623634-a932-4141-93cb-29c23a0c27c7</groupId>
+			<artifactId>sample-api</artifactId>
+			<version>1.0.1</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-apikit-module</artifactId>
+			<version>1.5.5</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
 			<groupId>com.mulesoft.munit</groupId>
 			<artifactId>munit-runner</artifactId>
-			<version>2.3.9</version>
+			<version>2.3.6</version>
 			<classifier>mule-plugin</classifier>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.mulesoft.munit</groupId>
 			<artifactId>munit-tools</artifactId>
-			<version>2.3.9</version>
+			<version>2.3.6</version>
 			<classifier>mule-plugin</classifier>
 			<scope>test</scope>
 		</dependency>
@@ -114,13 +137,19 @@
 			<version>1.0.2</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.modules</groupId>
+			<artifactId>mule-secure-configuration-property-module</artifactId>
+			<version>1.2.5</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
 	</dependencies>
 
 	<repositories>
 		<repository>
-			<id>anypoint-exchange-v3</id>
+			<id>anypoint-exchange-v2</id>
 			<name>Anypoint Exchange</name>
-			<url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
+			<url>https://maven.anypoint.mulesoft.com/api/v2/maven</url>
 			<layout>default</layout>
 		</repository>
 		<repository>
