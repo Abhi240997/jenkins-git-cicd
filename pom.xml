@@ -9,8 +9,13 @@
 	<version>1.0.0</version>
 	<packaging>mule-application</packaging>
 
+<<<<<<< HEAD
 	<name>dart-cicd-demo-api</name>
 	
+=======
+	<name>jenkins-bb-poc</name>
+
+>>>>>>> 5f9c648b277ee46e732a5e16125b20ec72798544
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
